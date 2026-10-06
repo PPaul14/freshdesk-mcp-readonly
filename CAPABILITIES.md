@@ -57,7 +57,7 @@ Freshdesk.
 
 | Situation | What the agent gets |
 |---|---|
-| Rate limited | The client first waits and retries (honouring `Retry-After`, within a 30-second budget). If that fails: a tool error `[rate_limited] Freshdesk rate limit reached (HTTP 429). Try again later.` The wait time is recorded in the error's details but is not passed to the agent today. |
+| Rate limited | The client first waits and retries (honouring `Retry-After`, within a 30-second budget). If the wait is too long or retries run out, the agent gets a tool error with the wait time, e.g. `[rate_limited] Freshdesk rate limit reached; retry after 40 seconds.` (rounded up, so it never retries too early). |
 | Partial results | `meta.has_more`, `meta.truncated` and plain-language `meta.notes`, e.g. "call again with page=2" or "only the first 300 results are reachable". |
 | Data changing between calls | Nothing special. Every call reads live data, so two calls can disagree if a ticket was edited in between. There's no snapshot or warning. |
 | Ticket deleted mid-read | A normal result, `found: false` with a message, not an error. |

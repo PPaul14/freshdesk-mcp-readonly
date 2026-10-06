@@ -1,7 +1,9 @@
 """Retry-After handling and rate-limit header parsing (real Freshdesk "50.0" format)."""
 
 import pytest
+from mcp.server.mcpserver.exceptions import ToolError
 
+from freshdesk_mcp import server
 from freshdesk_mcp.client import LOW_REMAINING_PAUSE_SECONDS, RateLimitInfo, _int_header
 from freshdesk_mcp.errors import RateLimitedError
 from tests.conftest import BASE
@@ -72,3 +74,29 @@ def test_junk_rate_limit_headers_are_ignored_not_crashing(client, rsps):
 def test_int_header_parsing(value, expected):
     """Header parsing accepts integers and decimals and rejects junk safely."""
     assert _int_header({"X": value}, "X") == expected
+
+
+@pytest.mark.parametrize(
+    ("retry_after", "expected"),
+    [
+        (40.0, "Freshdesk rate limit reached; retry after 40 seconds."),
+        (40.2, "Freshdesk rate limit reached; retry after 41 seconds."),
+        (1.0, "Freshdesk rate limit reached; retry after 1 second."),
+        (None, RateLimitedError.DEFAULT_MESSAGE),
+    ],
+)
+def test_rate_limited_message_states_the_wait(retry_after, expected):
+    """The wait is in the message (rounded up, so the agent never retries too early)."""
+    assert RateLimitedError(retry_after_seconds=retry_after).message == expected
+
+
+def test_agent_sees_retry_wait_in_tool_error(client, rsps, sleeps, monkeypatch):
+    """Via the real MCP tool wrapper, a 429 too long to wait out tells the agent how long."""
+    monkeypatch.setattr(server, "_client", client)
+    rsps.get(URL, status=429, headers={"Retry-After": "40"})  # 40 s > 30 s budget: no retry
+
+    with pytest.raises(ToolError) as info:
+        server.get_ticket(ticket_id=1)
+
+    assert str(info.value) == "[rate_limited] Freshdesk rate limit reached; retry after 40 seconds."
+    assert sleeps == []

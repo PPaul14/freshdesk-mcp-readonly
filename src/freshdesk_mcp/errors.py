@@ -8,6 +8,7 @@ contain the API key, auth headers, or URLs with credentials.
 the agent; the tools layer turns NotFoundError / empty lists into normal results.
 """
 
+import math
 from typing import Any, ClassVar
 
 
@@ -99,6 +100,11 @@ class RateLimitedError(FreshdeskError):
         merged = dict(details or {})
         if retry_after_seconds is not None:
             merged["retry_after_seconds"] = retry_after_seconds
+            if message is None:
+                # Put the wait in the message itself: the agent only ever sees code + message.
+                wait = math.ceil(retry_after_seconds)
+                unit = "second" if wait == 1 else "seconds"
+                message = f"Freshdesk rate limit reached; retry after {wait} {unit}."
         super().__init__(message, details=merged or None)
 
 

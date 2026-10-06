@@ -154,7 +154,7 @@ reopen it. The four tools should appear in the tools menu.
 ## Development
 
 ```bash
-pytest                      # 51 tests; all HTTP is mocked, no Freshdesk account needed
+pytest                      # all HTTP is mocked, no Freshdesk account needed
 ruff format . && ruff check .
 ```
 
@@ -172,7 +172,7 @@ python scripts/export_tool_specs.py
 | `[config_error] Missing or empty environment variable(s)` | `.env` is missing or a value is empty. It must sit next to `pyproject.toml`. |
 | `.env` is filled in but values still look empty | A variable with the same name already set in your shell or system environment wins over `.env`. In PowerShell check `Test-Path env:FRESHDESK_API_KEY`; remove it with `Remove-Item env:FRESHDESK_API_KEY` or open a new terminal. |
 | `[auth_failed] ... (HTTP 401)` | Wrong API key, or API access is disabled for your agent in **Admin > Agents**. |
-| `[rate_limited]` | Freshdesk's per-minute limit was hit (50/min on trials). The client already retries; wait a minute. |
+| `[rate_limited] ... retry after N seconds` | Freshdesk's per-minute limit was hit (50/min on trials). The client already retried; wait the number of seconds in the message. |
 | Tools don't appear in Claude Desktop | Check the config path for your install (table above), that the `command` path exists, and that you fully restarted the app. Server logs are in the `logs` folder next to the config file (`mcp-server-freshdesk.log`). |
 
 The server logs to **stderr only**, because stdout carries the MCP protocol.
