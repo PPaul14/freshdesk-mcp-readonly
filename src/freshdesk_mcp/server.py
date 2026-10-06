@@ -33,7 +33,13 @@ logger = logging.getLogger("freshdesk_mcp")
 INSTRUCTIONS = (
     "Read-only access to a Freshdesk helpdesk. You cannot reply to, update, assign, merge or "
     "close tickets. Requester emails are deliberately not provided. If the data does not answer "
-    "the question, say so instead of guessing."
+    "the question, say so instead of guessing. "
+    "Searches can only filter by status, priority, tag and dates. Never offer to search by "
+    "requester, email or words in the subject or body. "
+    "Never offer to perform write actions (reply, close, merge, update) through any other tool "
+    "such as a browser. Draft the text and tell the user a human must do it in Freshdesk. "
+    "Do not infer emotions, sentiment, intent or churn risk. You may report factual signals "
+    "(overdue, no reply, number of follow-ups) and must say they are not a prediction."
 )
 
 LIST_TICKETS_DESCRIPTION = (
@@ -207,8 +213,8 @@ def get_ticket_conversations(
     )
 
 
-def tool_specs() -> list[dict[str, Any]]:
-    """The tool list exactly as an MCP client sees it (used for mcp_tools.json)."""
+def server_spec() -> dict[str, Any]:
+    """Instructions and tool list exactly as an MCP client sees them (used for mcp_tools.json)."""
     tools = asyncio.run(server.list_tools())
     specs = []
     for tool in tools:
@@ -220,11 +226,11 @@ def tool_specs() -> list[dict[str, Any]]:
         if tool.output_schema is not None:
             spec["outputSchema"] = tool.output_schema
         specs.append(spec)
-    return specs
+    return {"instructions": server.instructions, "tools": specs}
 
 
-def tool_specs_json() -> str:
-    return json.dumps(tool_specs(), indent=2, sort_keys=True) + "\n"
+def server_spec_json() -> str:
+    return json.dumps(server_spec(), indent=2, sort_keys=True) + "\n"
 
 
 def main() -> None:

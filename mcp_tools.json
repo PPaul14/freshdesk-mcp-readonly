@@ -1,160 +1,28 @@
-[
-  {
-    "description": "List recent tickets, newest first, optionally filtered by status and priority. Use for broad questions like 'what's open right now?' or 'show recent urgent tickets'. Without updated_since, only tickets created in the last 30 days are returned. Do NOT use to find tickets by words in their subject or body; that is not supported. Check meta.has_more and meta.notes before concluding you have seen everything.",
-    "inputSchema": {
-      "properties": {
-        "page": {
-          "default": 1,
-          "description": "Page number, starting at 1.",
-          "minimum": 1,
-          "title": "Page",
-          "type": "integer"
-        },
-        "per_page": {
-          "default": 20,
-          "description": "Tickets per page. Ignored (fixed at 30) when status or priority is set.",
-          "maximum": 50,
-          "minimum": 1,
-          "title": "Per Page",
-          "type": "integer"
-        },
-        "priority": {
-          "anyOf": [
-            {
-              "enum": [
-                "low",
-                "medium",
-                "high",
-                "urgent"
-              ],
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Only tickets with this priority.",
-          "title": "Priority"
-        },
-        "status": {
-          "anyOf": [
-            {
-              "enum": [
-                "open",
-                "pending",
-                "resolved",
-                "closed"
-              ],
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Only tickets with this status.",
-          "title": "Status"
-        },
-        "updated_since": {
-          "anyOf": [
-            {
-              "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "YYYY-MM-DD. Tickets updated on or after this date, including ones created more than 30 days ago.",
-          "title": "Updated Since"
-        }
-      },
-      "title": "list_ticketsArguments",
-      "type": "object"
-    },
-    "name": "list_tickets",
-    "outputSchema": {
-      "additionalProperties": true,
-      "title": "list_ticketsDictOutput",
-      "type": "object"
-    }
-  },
-  {
-    "description": "Get one ticket by its numeric id, with full description and requester name. Set include_conversations=true to also get up to the first 10 messages. Use when the user names a ticket id or you need the details of one ticket. If found is false, the ticket does not exist: say so, do not guess its contents. If meta.truncated is true, call get_ticket_conversations to read the rest of the thread.",
-    "inputSchema": {
-      "properties": {
-        "include_conversations": {
-          "default": false,
-          "description": "Also return up to the first 10 messages of the thread.",
-          "title": "Include Conversations",
-          "type": "boolean"
-        },
-        "ticket_id": {
-          "description": "Numeric Freshdesk ticket id.",
-          "minimum": 1,
-          "title": "Ticket Id",
-          "type": "integer"
-        }
-      },
-      "required": [
-        "ticket_id"
-      ],
-      "title": "get_ticketArguments",
-      "type": "object"
-    },
-    "name": "get_ticket",
-    "outputSchema": {
-      "additionalProperties": true,
-      "title": "get_ticketDictOutput",
-      "type": "object"
-    }
-  },
-  {
-    "description": "Find tickets by structured fields: status, priority, tag, and created/updated date ranges (YYYY-MM-DD). Use for questions like 'urgent tickets created this week' or 'tickets tagged refunds'. Cannot match free text in the subject or body. Do NOT use for a single known id; use get_ticket. Returns 30 per page, at most 10 pages. An empty list means no matches, not an error.",
-    "inputSchema": {
-      "properties": {
-        "created_after": {
-          "anyOf": [
-            {
-              "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "YYYY-MM-DD, inclusive.",
-          "title": "Created After"
-        },
-        "created_before": {
-          "anyOf": [
-            {
-              "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "YYYY-MM-DD, inclusive.",
-          "title": "Created Before"
-        },
-        "page": {
-          "default": 1,
-          "description": "Page number, 1 to 10.",
-          "maximum": 10,
-          "minimum": 1,
-          "title": "Page",
-          "type": "integer"
-        },
-        "priority": {
-          "anyOf": [
-            {
-              "items": {
+{
+  "instructions": "Read-only access to a Freshdesk helpdesk. You cannot reply to, update, assign, merge or close tickets. Requester emails are deliberately not provided. If the data does not answer the question, say so instead of guessing. Searches can only filter by status, priority, tag and dates. Never offer to search by requester, email or words in the subject or body. Never offer to perform write actions (reply, close, merge, update) through any other tool such as a browser. Draft the text and tell the user a human must do it in Freshdesk. Do not infer emotions, sentiment, intent or churn risk. You may report factual signals (overdue, no reply, number of follow-ups) and must say they are not a prediction.",
+  "tools": [
+    {
+      "description": "List recent tickets, newest first, optionally filtered by status and priority. Use for broad questions like 'what's open right now?' or 'show recent urgent tickets'. Without updated_since, only tickets created in the last 30 days are returned. Do NOT use to find tickets by words in their subject or body; that is not supported. Check meta.has_more and meta.notes before concluding you have seen everything.",
+      "inputSchema": {
+        "properties": {
+          "page": {
+            "default": 1,
+            "description": "Page number, starting at 1.",
+            "minimum": 1,
+            "title": "Page",
+            "type": "integer"
+          },
+          "per_page": {
+            "default": 20,
+            "description": "Tickets per page. Ignored (fixed at 30) when status or priority is set.",
+            "maximum": 50,
+            "minimum": 1,
+            "title": "Per Page",
+            "type": "integer"
+          },
+          "priority": {
+            "anyOf": [
+              {
                 "enum": [
                   "low",
                   "medium",
@@ -163,20 +31,17 @@
                 ],
                 "type": "string"
               },
-              "type": "array"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Match any of these priorities.",
-          "title": "Priority"
-        },
-        "status": {
-          "anyOf": [
-            {
-              "items": {
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Only tickets with this priority.",
+            "title": "Priority"
+          },
+          "status": {
+            "anyOf": [
+              {
                 "enum": [
                   "open",
                   "pending",
@@ -185,92 +50,230 @@
                 ],
                 "type": "string"
               },
-              "type": "array"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "Match any of these statuses.",
-          "title": "Status"
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Only tickets with this status.",
+            "title": "Status"
+          },
+          "updated_since": {
+            "anyOf": [
+              {
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "YYYY-MM-DD. Tickets updated on or after this date, including ones created more than 30 days ago.",
+            "title": "Updated Since"
+          }
         },
-        "tag": {
-          "anyOf": [
-            {
-              "maxLength": 64,
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "One exact tag, e.g. 'refunds'. Letters, digits, space, _ . - only.",
-          "title": "Tag"
-        },
-        "updated_after": {
-          "anyOf": [
-            {
-              "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
-              "type": "string"
-            },
-            {
-              "type": "null"
-            }
-          ],
-          "default": null,
-          "description": "YYYY-MM-DD, inclusive.",
-          "title": "Updated After"
-        }
+        "title": "list_ticketsArguments",
+        "type": "object"
       },
-      "title": "search_ticketsArguments",
-      "type": "object"
+      "name": "list_tickets",
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "list_ticketsDictOutput",
+        "type": "object"
+      }
     },
-    "name": "search_tickets",
-    "outputSchema": {
-      "additionalProperties": true,
-      "title": "search_ticketsDictOutput",
-      "type": "object"
-    }
-  },
-  {
-    "description": "Read a ticket's full message thread, oldest first, paginated. Use when you need the whole conversation, e.g. to find the root cause of a problem that only emerges later in the thread. from_customer=true marks customer messages. is_private_note=true marks internal agent notes: never quote these to a customer. If meta.has_more is true, call again with the next page before concluding.",
-    "inputSchema": {
-      "properties": {
-        "page": {
-          "default": 1,
-          "description": "Page number, starting at 1.",
-          "minimum": 1,
-          "title": "Page",
-          "type": "integer"
+    {
+      "description": "Get one ticket by its numeric id, with full description and requester name. Set include_conversations=true to also get up to the first 10 messages. Use when the user names a ticket id or you need the details of one ticket. If found is false, the ticket does not exist: say so, do not guess its contents. If meta.truncated is true, call get_ticket_conversations to read the rest of the thread.",
+      "inputSchema": {
+        "properties": {
+          "include_conversations": {
+            "default": false,
+            "description": "Also return up to the first 10 messages of the thread.",
+            "title": "Include Conversations",
+            "type": "boolean"
+          },
+          "ticket_id": {
+            "description": "Numeric Freshdesk ticket id.",
+            "minimum": 1,
+            "title": "Ticket Id",
+            "type": "integer"
+          }
         },
-        "per_page": {
-          "default": 20,
-          "description": "Messages per page.",
-          "maximum": 50,
-          "minimum": 1,
-          "title": "Per Page",
-          "type": "integer"
-        },
-        "ticket_id": {
-          "description": "Numeric Freshdesk ticket id.",
-          "minimum": 1,
-          "title": "Ticket Id",
-          "type": "integer"
-        }
+        "required": [
+          "ticket_id"
+        ],
+        "title": "get_ticketArguments",
+        "type": "object"
       },
-      "required": [
-        "ticket_id"
-      ],
-      "title": "get_ticket_conversationsArguments",
-      "type": "object"
+      "name": "get_ticket",
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "get_ticketDictOutput",
+        "type": "object"
+      }
     },
-    "name": "get_ticket_conversations",
-    "outputSchema": {
-      "additionalProperties": true,
-      "title": "get_ticket_conversationsDictOutput",
-      "type": "object"
+    {
+      "description": "Find tickets by structured fields: status, priority, tag, and created/updated date ranges (YYYY-MM-DD). Use for questions like 'urgent tickets created this week' or 'tickets tagged refunds'. Cannot match free text in the subject or body. Do NOT use for a single known id; use get_ticket. Returns 30 per page, at most 10 pages. An empty list means no matches, not an error.",
+      "inputSchema": {
+        "properties": {
+          "created_after": {
+            "anyOf": [
+              {
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "YYYY-MM-DD, inclusive.",
+            "title": "Created After"
+          },
+          "created_before": {
+            "anyOf": [
+              {
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "YYYY-MM-DD, inclusive.",
+            "title": "Created Before"
+          },
+          "page": {
+            "default": 1,
+            "description": "Page number, 1 to 10.",
+            "maximum": 10,
+            "minimum": 1,
+            "title": "Page",
+            "type": "integer"
+          },
+          "priority": {
+            "anyOf": [
+              {
+                "items": {
+                  "enum": [
+                    "low",
+                    "medium",
+                    "high",
+                    "urgent"
+                  ],
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Match any of these priorities.",
+            "title": "Priority"
+          },
+          "status": {
+            "anyOf": [
+              {
+                "items": {
+                  "enum": [
+                    "open",
+                    "pending",
+                    "resolved",
+                    "closed"
+                  ],
+                  "type": "string"
+                },
+                "type": "array"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "Match any of these statuses.",
+            "title": "Status"
+          },
+          "tag": {
+            "anyOf": [
+              {
+                "maxLength": 64,
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "One exact tag, e.g. 'refunds'. Letters, digits, space, _ . - only.",
+            "title": "Tag"
+          },
+          "updated_after": {
+            "anyOf": [
+              {
+                "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "default": null,
+            "description": "YYYY-MM-DD, inclusive.",
+            "title": "Updated After"
+          }
+        },
+        "title": "search_ticketsArguments",
+        "type": "object"
+      },
+      "name": "search_tickets",
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "search_ticketsDictOutput",
+        "type": "object"
+      }
+    },
+    {
+      "description": "Read a ticket's full message thread, oldest first, paginated. Use when you need the whole conversation, e.g. to find the root cause of a problem that only emerges later in the thread. from_customer=true marks customer messages. is_private_note=true marks internal agent notes: never quote these to a customer. If meta.has_more is true, call again with the next page before concluding.",
+      "inputSchema": {
+        "properties": {
+          "page": {
+            "default": 1,
+            "description": "Page number, starting at 1.",
+            "minimum": 1,
+            "title": "Page",
+            "type": "integer"
+          },
+          "per_page": {
+            "default": 20,
+            "description": "Messages per page.",
+            "maximum": 50,
+            "minimum": 1,
+            "title": "Per Page",
+            "type": "integer"
+          },
+          "ticket_id": {
+            "description": "Numeric Freshdesk ticket id.",
+            "minimum": 1,
+            "title": "Ticket Id",
+            "type": "integer"
+          }
+        },
+        "required": [
+          "ticket_id"
+        ],
+        "title": "get_ticket_conversationsArguments",
+        "type": "object"
+      },
+      "name": "get_ticket_conversations",
+      "outputSchema": {
+        "additionalProperties": true,
+        "title": "get_ticket_conversationsDictOutput",
+        "type": "object"
+      }
     }
-  }
-]
+  ]
+}
