@@ -299,7 +299,16 @@ class FreshdeskClient:
             logger.info("Freshdesk rate limit nearly used (%d left); pausing", info.remaining)
             self._sleep(LOW_REMAINING_PAUSE_SECONDS)
 
-    # -------------------------------------------------------------- pagination
+    # -------------------------------------------------------------- reads
+
+    def get_one(self, path: str, params: dict[str, Any] | None = None) -> dict[str, Any]:
+        """Fetch a single object, e.g. /tickets/42."""
+        data = self._request(path, params).data
+        if not isinstance(data, dict):
+            raise MalformedResponseError(
+                f"Expected an object from GET {path}.", details={"path": path}
+            )
+        return data
 
     def get_page(
         self,
