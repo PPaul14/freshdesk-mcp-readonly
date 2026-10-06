@@ -1,0 +1,195 @@
+{
+  "_comment": "Fictional test data only. All people, shops, IDs and amounts are made up. Emails use the reserved example.com domain. priority: 1 Low, 2 Medium, 3 High, 4 Urgent. status (final): 2 Open, 3 Pending, 4 Resolved, 5 Closed.",
+  "tickets": [
+    {
+      "subject": "Customers are charged but orders aren't confirming - is your checkout broken?",
+      "description": "Since this morning several customers say money was debited but our store still shows their orders as 'awaiting payment'. We haven't changed anything on our side. Is your checkout broken? This is costing us sales.",
+      "requester": {"name": "Kabir Mockwala", "email": "kabir.mockwala@example.com"},
+      "priority": 4,
+      "status": 4,
+      "tags": ["checkout", "payments", "orders"],
+      "messages": [
+        {"from": "agent", "body": "Sorry for the trouble, Kabir. Our checkout is operating normally right now. Could you share two or three payment IDs from affected customers so we can trace them?"},
+        {"from": "customer", "body": "Here are three: pay_FAKE7A01, pay_FAKE7A02, pay_FAKE7A03. All customers say they were charged."},
+        {"from": "agent", "body": "Thanks. All three payments show as captured on our side, so the customers were charged correctly and the money will settle to you. The status update to your store is what's missing. Do you use our payment.captured notification to mark orders as paid?"},
+        {"from": "customer", "body": "Yes, our developer set that up last year. It has always worked."},
+        {"from": "agent", "body": "Looking at delivery logs for those three payments: every notification we sent to https://shop.example.com/hooks/payments got an HTTP 500 response from your server, and we have been retrying. The first failure was today at 09:12. Did anything get deployed on your side around then?"},
+        {"from": "customer", "body": "Our developer pushed an update to the order module this morning. Checking with them now."},
+        {"from": "customer", "body": "Found it. The update renamed a database column and our webhook handler crashes on every request. That's the 500. Rolling back now."},
+        {"from": "agent", "body": "Great find. Once your endpoint returns 200 again, our pending retries will deliver automatically and those orders should flip to paid. You can also re-send them from Dashboard > Webhooks > Failed deliveries."},
+        {"from": "customer", "body": "Rolled back, retries came through and all affected orders are now marked paid. Thanks, and sorry for blaming your checkout!"}
+      ]
+    },
+    {
+      "subject": "Settlement for 28 Sep not received in bank account",
+      "description": "Our settlement for 28 September has not reached our bank account. Dashboard shows it as processed. Amount is INR 1,84,500. Please check urgently.",
+      "requester": {"name": "Meera Sampleton", "email": "meera.sampleton@example.com"},
+      "priority": 3,
+      "status": 5,
+      "tags": ["settlements", "bank-account"],
+      "messages": [
+        {"from": "agent", "body": "Hi Meera, thanks for reaching out. Could you confirm the settlement ID shown on your dashboard for 28 September?"},
+        {"from": "customer", "body": "It's setl_FAKE0928A."},
+        {"from": "agent", "body": "Thank you. That settlement was sent to the bank on 29 September with reference UTR FAKEUTR000123. Bank credits usually appear within one working day. Could you check your statement for that reference?"},
+        {"from": "customer", "body": "Checked with our accountant. Nothing with that reference on our statement."},
+        {"from": "agent", "body": "Understood. I've raised a trace with our banking partner. Meanwhile, can you confirm the last four digits of the account you expect the money in?"},
+        {"from": "customer", "body": "Ends in 4421."},
+        {"from": "agent", "body": "That's the issue: the account registered with us ends in 9087. Was the settlement account changed recently?"},
+        {"from": "customer", "body": "Oh. We moved banks in August. I thought our ops person had updated it on the dashboard."},
+        {"from": "agent", "body": "The change request was started on 18 August but never completed because the cancelled-cheque upload was missing. So the 28 Sep settlement went to the old account ending 9087. Is that account still open?"},
+        {"from": "customer", "body": "Yes, it is still open, we just stopped using it. Let me check it."},
+        {"from": "customer", "body": "Found it, the full INR 1,84,500 is in the old account. Panic over. How do we finish the account change?"},
+        {"from": "agent", "body": "Please upload a cancelled cheque for the new account under Settings > Bank Account. Verification takes 1-2 working days, and future settlements will go to the new account after that."},
+        {"from": "customer", "body": "Uploaded just now."},
+        {"from": "agent", "body": "Verified. Your new account ending 4421 is now active for settlements. Closing this ticket. Thanks for your patience, Meera."}
+      ]
+    },
+    {
+      "subject": "Refund stuck in processing for order #FX-1042",
+      "description": "We refunded order #FX-1042 (INR 2,350) five days ago and it still says 'processing'. The customer keeps calling us. When will it go through?",
+      "requester": {"name": "Rohan Testwala", "email": "rohan.testwala@example.com"},
+      "priority": 2,
+      "status": 2,
+      "tags": ["refunds"],
+      "messages": []
+    },
+    {
+      "subject": "Customer hasn't got their money back - order FX-1042",
+      "description": "Following up: a customer of ours is still waiting for the INR 2,350 we returned to them for order FX-1042 last week. Our panel shows the refund but the customer says nothing has arrived. Can you look into it?",
+      "requester": {"name": "Rohan Testwala", "email": "rohan.testwala@example.com"},
+      "priority": 2,
+      "status": 3,
+      "tags": ["refunds", "follow-up"],
+      "messages": [
+        {"from": "agent", "body": "Hi Rohan, we're checking with the issuing bank. Could you share the refund ID from your dashboard?"}
+      ]
+    },
+    {
+      "subject": "help",
+      "description": "not working",
+      "requester": {"name": "Zoya Lorem", "email": "zoya.lorem@example.com"},
+      "priority": 1,
+      "status": 3,
+      "tags": [],
+      "messages": [
+        {"from": "agent", "body": "Hi Zoya, happy to help. Could you tell us what isn't working (checkout, dashboard, refunds, API?) and share a screenshot or error message if you have one?"}
+      ]
+    },
+    {
+      "subject": "Settlement amount doesn't match our sales for 30 Sep",
+      "description": "Our sales on 30 September were INR 12,800 but the settlement we received is lower. Please explain the difference.",
+      "requester": {"name": "Ananya Demoji", "email": "ananya.demoji@example.com"},
+      "priority": 2,
+      "status": 2,
+      "tags": ["settlements", "reconciliation"],
+      "messages": [
+        {"from": "agent", "body": "Hi Ananya, settlements are net of transaction fees and GST on those fees. Could you send us the settlement report for 30 September so we can go through it line by line?"},
+        {"from": "customer", "body": "Attached the report downloaded from the dashboard.", "attachment": "settlement_report_2026-09-30.txt"}
+      ]
+    },
+    {
+      "subject": "API returns 401 Unauthorized when creating orders",
+      "description": "Every call to the create order API returns 401 Unauthorized with message 'invalid key'. This started after we went live today. Test mode worked fine.",
+      "requester": {"name": "Dev Fixture", "email": "dev.fixture@example.com"},
+      "priority": 3,
+      "status": 4,
+      "tags": ["api", "api-error", "authentication"],
+      "messages": [
+        {"from": "agent", "body": "Hi Dev, a 401 right after going live usually means test-mode keys are being used against live mode. Live keys start with 'live_' and test keys with 'test_'. Which prefix does your server use?"},
+        {"from": "customer", "body": "You're right, our production config still had the test_ key. Swapped it for the live key and orders are working. Thanks!"}
+      ]
+    },
+    {
+      "subject": "Getting 429 Too Many Requests from the orders API",
+      "description": "During our sale this evening our backend started getting HTTP 429 errors when creating orders. Some customers could not check out. What is the limit and how should we handle this?",
+      "requester": {"name": "Tara Stubworth", "email": "tara.stubworth@example.com"},
+      "priority": 2,
+      "status": 4,
+      "tags": ["api", "api-error", "rate-limit"],
+      "messages": [
+        {"from": "agent", "body": "Hi Tara, 429 means your account exceeded its per-minute request limit. Each 429 response includes a Retry-After header with the number of seconds to wait. Please retry after that delay rather than immediately, and avoid creating an order on every page load."},
+        {"from": "customer", "body": "We were creating an order on every cart view. Moved it to the 'Pay' button click and added retry with Retry-After. No more 429s."},
+        {"from": "agent", "body": "That's exactly the right fix. Marking this resolved."}
+      ]
+    },
+    {
+      "subject": "How do I issue a partial refund?",
+      "description": "A customer returned 1 of 3 items. How do I refund just that item instead of the full order?",
+      "requester": {"name": "Ishaan Dummyton", "email": "ishaan.dummyton@example.com"},
+      "priority": 1,
+      "status": 5,
+      "tags": ["refunds", "how-to"],
+      "messages": [
+        {"from": "agent", "body": "Hi Ishaan, open the payment in Dashboard > Payments, click 'Refund', choose 'Partial' and enter the amount for the returned item. You can issue multiple partial refunds up to the captured amount."},
+        {"from": "customer", "body": "Done, that was easy. Thank you."}
+      ]
+    },
+    {
+      "subject": "Refund API error: amount exceeds captured amount",
+      "description": "Our refund call for payment pay_FAKE3C77 fails with error code BAD_REQUEST and message 'refund amount exceeds captured amount'. The payment was INR 1,500 and we are refunding INR 1,500. Why is it failing?",
+      "requester": {"name": "Aarav Ipsum", "email": "aarav.ipsum@example.com"},
+      "priority": 3,
+      "status": 3,
+      "tags": ["refunds", "api", "api-error"],
+      "messages": [
+        {"from": "agent", "body": "Hi Aarav, amounts in the refund API are in the smallest currency unit (paise), so INR 1,500 should be sent as 150000. Could you check what value your code sends?"},
+        {"from": "customer", "body": "We send 1500.00 as a decimal. Checking with our developer whether a partial refund was already made on this payment too."}
+      ]
+    },
+    {
+      "subject": "Change settlement cycle from T+2 to T+1",
+      "description": "We'd like to receive settlements one day faster. Is T+1 available for our account and are there extra charges?",
+      "requester": {"name": "Nisha Seedling", "email": "nisha.seedling@example.com"},
+      "priority": 1,
+      "status": 2,
+      "tags": ["settlements", "account"],
+      "messages": []
+    },
+    {
+      "subject": "Payment page not loading on mobile",
+      "description": "Customers on mobile see a blank white screen when they tap 'Pay now'. Desktop works. Started about an hour ago. We are losing orders!",
+      "requester": {"name": "Priya Placeholder", "email": "priya.placeholder@example.com"},
+      "priority": 4,
+      "status": 2,
+      "tags": ["checkout", "mobile"],
+      "messages": [
+        {"from": "agent", "body": "Hi Priya, we're treating this as urgent. Could you share the device model, browser, and the URL of the page where 'Pay now' is tapped?"}
+      ]
+    },
+    {
+      "subject": "International cards being declined",
+      "description": "Customers from outside India say their Visa and Mastercard cards are declined on our checkout. Domestic cards work fine.",
+      "requester": {"name": "Farah Mockingly", "email": "farah.mockingly@example.com"},
+      "priority": 3,
+      "status": 3,
+      "tags": ["payments", "international"],
+      "messages": [
+        {"from": "agent", "body": "Hi Farah, international card payments need to be enabled separately on each account. I've raised an activation request; we'll need your website's refund and shipping policy URLs to complete it."}
+      ]
+    },
+    {
+      "subject": "Customer charged twice for one UPI payment",
+      "description": "A customer says they were charged twice for order #FX-2210 (INR 899) via UPI. We only see one successful payment. Please help, the customer is very upset.",
+      "requester": {"name": "Omar Placebo", "email": "omar.placebo@example.com"},
+      "priority": 4,
+      "status": 5,
+      "tags": ["refunds", "upi", "payments"],
+      "messages": [
+        {"from": "agent", "body": "Hi Omar, we can see one successful payment and one failed attempt for that order. The failed attempt's debit is automatically reversed by the customer's bank, usually within 5 working days. No action is needed from you."},
+        {"from": "customer", "body": "Customer confirms the second amount came back today. Thanks."}
+      ]
+    },
+    {
+      "subject": "API 500 error on fetch payments endpoint",
+      "description": "Fetching payments with a date filter returns HTTP 500 Internal Server Error intermittently. Example request ID: req_FAKE55D1.",
+      "requester": {"name": "Leela Specimen", "email": "leela.specimen@example.com"},
+      "priority": 2,
+      "status": 5,
+      "tags": ["api", "api-error"],
+      "messages": [
+        {"from": "agent", "body": "Hi Leela, thanks for the request ID. Our engineering team identified a bug when the date range spans more than 90 days and has deployed a fix. Could you retry?"},
+        {"from": "customer", "body": "Retried several times, no more 500s. Thanks for the quick fix."}
+      ]
+    }
+  ]
+}
