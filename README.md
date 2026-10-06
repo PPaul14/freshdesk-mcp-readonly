@@ -7,6 +7,11 @@ The agent can list, look up and search tickets and read their conversation threa
 reply to, update, assign, merge or close tickets: the connector only ever sends HTTP `GET`
 requests. Requester emails and phone numbers are never passed to the agent.
 
+- **[CAPABILITIES.md](CAPABILITIES.md)**: what the agent can and cannot do, failure modes, data
+  boundaries and evaluation findings.
+- **[demo/demo.md](demo/demo.md)**: the demo questions, what the tools return for each, and the
+  before/after evaluation.
+
 ## Tools
 
 | Tool | Use it for |
