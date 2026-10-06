@@ -9,11 +9,14 @@ description = "Read-only MCP connector that lets an AI agent read Freshdesk tick
 readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
-    "mcp>=1.2",
+    "mcp>=2.3,<3",
     "requests>=2.31",
     "pydantic>=2",
     "python-dotenv>=1.0",
 ]
+
+[project.scripts]
+freshdesk-mcp = "freshdesk_mcp.server:main"
 
 [project.optional-dependencies]
 dev = [
