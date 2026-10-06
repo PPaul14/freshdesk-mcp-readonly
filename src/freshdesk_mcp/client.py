@@ -104,8 +104,9 @@ def _normalise_domain(domain: str) -> str:
 
 def _int_header(headers: Any, name: str) -> int | None:
     try:
-        return int(headers[name])
-    except (KeyError, TypeError, ValueError):
+        # Freshdesk sends counts as decimals, e.g. "50.0"; int("50.0") would fail.
+        return int(float(headers[name]))
+    except (KeyError, TypeError, ValueError, OverflowError):
         return None
 
 
