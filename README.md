@@ -4,7 +4,7 @@ A read-only Model Context Protocol (MCP) server that gives an AI agent safe acce
 support tickets.
 
 ![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-3776AB)
-![Tests: 56 passed](https://img.shields.io/badge/tests-56%20passed-2EA44F)
+[![tests](https://github.com/PPaul14/freshdesk-mcp-readonly/actions/workflows/tests.yml/badge.svg)](https://github.com/PPaul14/freshdesk-mcp-readonly/actions/workflows/tests.yml)
 ![MCP: stdio server](https://img.shields.io/badge/MCP-stdio%20server-5A45FF)
 ![Access: read-only](https://img.shields.io/badge/access-read--only-6E7781)
 
